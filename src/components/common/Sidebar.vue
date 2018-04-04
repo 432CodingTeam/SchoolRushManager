@@ -25,69 +25,45 @@
             return {
                 items: [
                     {
-                        icon: 'el-icon-setting',
-                        index: 'readme',
-                        title: '自述'
-                    },
-                    {
                         icon: 'el-icon-menu',
+                        index: 'Situation',
+                        title: '博客概况'
+                    },
+                    {
+                        icon: 'el-icon-edit',
                         index: '2',
-                        title: '表格',
-                        subs: [
-                            {
-                                index: 'basetable',
-                                title: '基础表格'
-                            },
-                            {
-                                index: 'vuetable',
-                                title: 'Vue表格组件'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-date',
-                        index: '3',
-                        title: '表单',
-                        subs: [
-                            {
-                                index: 'baseform',
-                                title: '基本表单'
-                            },
-                            {
-                                index: 'vueeditor',
-                                title: '编辑器'
-                            },
-                            {
-                                index: 'markdown',
-                                title: 'markdown'
-                            },
-                            {
-                                index: 'upload',
-                                title: '文件上传'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-date',
-                        index: '4',
-                        title: '*问题管理',
+                        title: '问题管理',
                         subs: [
                             {
                                 index: 'allQuestions',
-                                title: '所有问题'
+                                title: '全部问题'
                             },
+                            {
+                                index: 'editQuestion',
+                                title: '添加问题'
+                            }
                         ]
                     },
                     {
-                        icon: 'el-icon-star-on',
-                        index: 'basecharts',
-                        title: '图表'
+                        icon: 'el-icon-upload',
+                        index: 'uploadPublish',
+                        title: '上传MD创作'
                     },
                     {
-                        icon: 'el-icon-upload2',
-                        index: 'drag',
-                        title: '拖拽'
-                    }
+                        icon: 'el-icon-document',
+                        index: 'article',
+                        title: '我的创作'
+                    },
+                    {
+                        icon: 'el-icon-star-on',
+                        index: 'cate',
+                        title: '分类管理'
+                    },
+                    {
+                        icon: 'el-icon-setting',
+                        index: 'ManageBlog',
+                        title: '管理博客'
+                    },
                 ]
             }
         },
@@ -95,7 +71,19 @@
             onRoutes(){
                 return this.$route.path.replace('/','');
             }
-        }
+        },
+        created() {
+            //先判断是否已经登陆
+            const that = this
+            that.$axios.get(that.$API.Admin.getAdminInfo)
+            .then((res) => {
+                let admin = res.data.data
+                if(admin.islogin == 0) {
+                    console.log("未登录")
+                    that.$router.push('/login');
+                }
+            })
+        },
     }
 </script>
 

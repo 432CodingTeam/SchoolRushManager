@@ -1,7 +1,12 @@
 <template>
     <div class="login-wrap">
-        <div class="ms-title">后台管理系统</div>
+        <div class="quote">
+            
+        </div>
         <div class="ms-login">
+            <div class="ms-title">
+                - Coding till die -
+            </div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="username"></el-input>
@@ -12,7 +17,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 请勤奋更新。</p>
             </el-form>
         </div>
     </div>
@@ -22,9 +27,14 @@
     export default {
         data: function(){
             return {
+                ccap: {
+                    image_src: '',
+                    code: ''
+                },
                 ruleForm: {
                     username: '',
-                    password: ''
+                    password: '',
+                    ccap: ''
                 },
                 rules: {
                     username: [
@@ -32,22 +42,53 @@
                     ],
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
-                    ]
+                    ],
                 }
             }
         },
         methods: {
             submitForm(formName) {
-                const self = this;
-                self.$refs[formName].validate((valid) => {
+                const that = this;
+                that.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/readme');
+                        // that.login(that.ruleForm.username, that.ruleForm.password, function (res) {
+                        //     if(res) {
+                        //         localStorage.setItem('ms_username',that.ruleForm.username);
+                        //         that.$message.success("登陆成功！")
+                        //         that.$router.push('/Situation');
+                        //     } else {
+                        //         that.$message.error("登陆失败！用户名或密码错误")
+                        //     }
+                        // })
+                        that.$message.success("登陆成功！")
+                        that.$router.push('/Situation');
                     } else {
-                        console.log('error submit!!');
+                        that.$message.error("请填写完整！")
                         return false;
                     }
                 });
+            },
+            login(user,pwd, cb) {
+                const that = this
+                that.$axios.post(that.$API.Admin.login, {
+                    'user': user,
+                    'pwd': pwd
+                }).then( (res) => {
+                    console.log(res.data.data)
+                    if(res.data.data==0 || res.data.data==1){
+                        that.$axios.get(that.$API.Admin.isLogin)
+                        .then((resp) => {
+                            console.log(resp.data.data)
+                            if(resp.data.data) {
+                                cb(true)
+                            } else {
+                                cb(false)
+                            }
+                        })
+                    } else {
+                        cb(false)
+                    }
+                })
             }
         }
     }
@@ -58,27 +99,37 @@
         position: relative;
         width:100%;
         height:100%;
+        background: url("../../../static/img/login-bg.jpg");
+        background-size: 100% 100%;
     }
     .ms-title{
         position: absolute;
         top:50%;
+        left:0;
         width:100%;
-        margin-top: -230px;
+        padding: 0;
+        margin-top: -115px;
         text-align: center;
-        font-size:30px;
-        color: #fff;
-
+        font-size: 30px;
+        font:'Lato', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.2rem;
+        color: #222;
+    }
+    .demo-ruleForm {
+        margin-top: 40px;
     }
     .ms-login{
         position: absolute;
         left:50%;
         top:50%;
-        width:300px;
-        height:160px;
-        margin:-150px 0 0 -190px;
+        width:320px;
+        height:200px;
+        margin:-200px 0 0 -190px;
         padding:40px;
         border-radius: 5px;
         background: #fff;
+        box-shadow: 0px 0px 10px 0px #888;
     }
     .login-btn{
         text-align: center;
