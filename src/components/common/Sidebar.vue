@@ -41,7 +41,11 @@
                             {
                                 index: 'editQuestion',
                                 title: '添加问题'
-                            }
+                            },
+                            {
+                                index: 'reviewQuestion',
+                                title: '待审核问题'
+                            },
                         ]
                     },
                     {

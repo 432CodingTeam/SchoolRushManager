@@ -6,7 +6,8 @@ const data = [
         majorID: 2,
         uid: 2,
         uName: "iimT",
-        toAnswer: "送分题"
+        toAnswer: "送分题",
+        status: 1,
     },
     {
         id: 1,
@@ -15,7 +16,8 @@ const data = [
         majorID: 2,
         uid: 2,
         uName: "iimT",
-        toAnswer: "送分题"
+        toAnswer: "送分题",
+        status: 1,
     },
     {
         id: 1,
@@ -24,7 +26,8 @@ const data = [
         majorID: 2,
         uid: 2,
         uName: "iimT",
-        toAnswer: "送分题"
+        toAnswer: "送分题",
+        status: 1,
     },
     {
         id: 1,
@@ -33,7 +36,8 @@ const data = [
         majorID: 2,
         uid: 2,
         uName: "iimT",
-        toAnswer: "送分题"
+        toAnswer: "送分题",
+        status: 1,
     }
 ];
 

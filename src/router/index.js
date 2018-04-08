@@ -50,6 +50,10 @@ export default new Router({
                     path: '/editQuestion',
                     component: resolve => require(['../components/page/question/editQuestion.vue'], resolve)   // vue-schart组件
                 },
+                {
+                    path: '/reviewQuestion',
+                    component: resolve => require(['../components/page/question/reviewQuestion.vue'], resolve)   // vue-schart组件
+                },
             ]
         },
         {

@@ -29,6 +29,12 @@ var API = {
     Major: {
         root: "Major",
         getAll: "getAll",
+    },
+    Question: {
+        root: "Question",
+        getTotalNum: "getTotalNum",
+        getPage: "getPage",
+        UpdateById: "UpdateById",
     }
 }
 

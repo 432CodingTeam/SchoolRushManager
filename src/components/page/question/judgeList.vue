@@ -17,14 +17,11 @@
       </el-table-column>
       <el-table-column prop="majorID" label="专业" width="70">
       </el-table-column>
-      <el-table-column prop="uid" label="发布人" width="85">
-        <template scope="scope">
-          <a class="article-title" @click="linkToArticle(scope.row)">{{ scope.row.uName }}</a>
-        </template>
+      <el-table-column prop="uName" label="发布人" width="85">
       </el-table-column>
       <el-table-column prop="toAnswer" label="提示" width="85">
       </el-table-column>
-      <el-table-column label="操作" width="80">
+      <el-table-column label="操作" width="150">
         <template scope="scope">
           <el-popover ref="deleteConfirm" placement="top" width="160" v-model="scope.row.confirmDeleteVisible">
             <p>确定删除吗？</p>
@@ -33,30 +30,29 @@
               <el-button type="primary" size="mini" @click="deleteSubmit">确定</el-button>
             </div>
           </el-popover>
-          <el-button size="small" type="danger" v-popover:deleteConfirm @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="small" type="primary" v-if="review" @click="handleReview(scope.$index, scope.row)">再审核</el-button>
+
+          <el-button size="small" type="primary" v-if="!review" @click="handlePassed(scope.$index, scope.row)">通过</el-button>
+          <el-button size="small" type="danger" v-if="!review" v-popover:deleteConfirm @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination">
-      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalArticle" :page-size="perPageArticles">
+      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalQuestion" :page-size="perPageQuestions">
       </el-pagination>
     </div>
   </div>
 </template>
 <script>
-import judgeData from "../../../../static/data/judgeData"
 export default {
   data() {
-    this.getArticalTotal();
-    this.getPage(1, 10);
     return {
-      perPageArticles: 10,
-      totalArticle: 0,
+      perPageQuestions: 10,
+      totalQuestion: 0,
       questions: [],
       QuestionsBack: [],
       tableData: [],
       curPage: "",
-      multipleSelection: [],
       del_list: [],
       searchKey: "",
       currentDeleteItem: {},
@@ -79,37 +75,55 @@ export default {
       console.log("删除");
     },
     editQuestion(row) {
-      row.type = 2
-      this.$router.push({ path: "/editQuestion", query: { question: row } });
+      row.type = 3
+      this.$router.push({ path: "/editQuestion", query: { question: row } })
     },
-    getArticalTotal() {
-      //获取文章总数
-      this.totalArticle = 10
+    getQuestionTotal() {
+      //获取问题总数
+      let that = this
+      let url = this.$API.getService("Question", "getTotalNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res.data.data)
+        that.totalQuestion = res.data.data
+      })
     },
     getPage(page, pageNum) {
-      this.questions = judgeData.data
-      this.QuestionsBack = this.questions
+      let that = this
+      let url = this.$API.getService("Question", "getPage")
+
+      this.$API.post(url, {
+        page: page,
+        num: pageNum,
+      }).then((res) => {
+        console.log(res.data.data)
+        that.questions = res.data.data
+        that.QuestionsBack = that.questions
+      })
     },
     resetEditFlag(flag) {
-      for (var i = 0; i < this.cate.length; i++) this.cate[i].editFlag = flag;
+      for (var i = 0; i < this.cate.length; i++)
+        this.cate[i].editFlag = flag
     },
     handleCurrentChange(val) {
-      this.getPage(val, this.perPageArticles);
+      this.getPage(val, this.perPageQuestions)
+    },
+    handleReview(index, row) {
+      this.questions[index].status = 0
+    },
+    handlePassed() {
+      this.questions[index].status = 1
     },
     search(key) {
+      if(!key)
+        key = this.searchKey
       key = key.trim();
       let searchRes = [];
-      for (var i = 0; i < this.QuestionsBack.length; i++) {
-        if (this.QuestionsBack[i].question.indexOf(key) != -1)
+      for (var i = 0; i < this. QuestionsBack.length; i++) {
+        if (this. QuestionsBack[i].question.indexOf(key) != -1)
           searchRes.push(this.QuestionsBack[i]);
       }
-      this.questions = searchRes
-    },
-    handleEdit(index, row) {
-      this.resetEditFlag(false);
-      this.cate[index].editFlag = false;
-      console.log(this.cate);
-      this.$message("编辑第" + (index + 1) + "行");
+      this.questions = searchRes;
     },
     handleDelete(index, row) {
       row.index = index;
@@ -121,14 +135,16 @@ export default {
   },
   watch: {
     searchKey(key) {
-      if (key == "") this.questions = this.QuestionsBack;
-      else this.search(key);
+      if (key == "") this.questions = this.QuestionsBack
+      else this.search(key)
     }
   },
   mounted() {
     //获取问题数据
-    this.getPage()
-  }
+    this.getQuestionTotal()
+    this.getPage(1, 1)
+  },
+  props: ["review"],
 };
 </script>
 

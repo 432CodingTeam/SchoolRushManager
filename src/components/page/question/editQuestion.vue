@@ -88,6 +88,13 @@
       <el-form-item label="给答题者:">
         <el-input type="textarea" v-model="question.toAnswer"></el-input>
       </el-form-item>
+
+      <el-form-item label="是否审核:">
+        <el-radio-group v-model="question.status">
+          <el-radio :label=1>直接发布</el-radio>
+          <el-radio :label=0>待审核</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="publish">添加</el-button>
       </el-form-item>
@@ -109,16 +116,17 @@ export default {
         correct: "",
         uName: "",
         toAnswer: "",
-        majorID: ""
-      },
-    }
+        majorID: "",
+        status: 0
+      }
+    };
   },
   mounted() {
     //DOM挂载之后 判断是否传入了已经发表的文章
     //如果是 就将此文章信息填入 开始编辑文章
     if (this.$route.query.question) {
-      this.question = this.$route.query.question
-      console.log(this.question)
+      this.question = this.$route.query.question;
+      console.log(this.question);
     }
     //获取全部分类
     this.getAllMajor();

@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column prop="toAnswer" label="提示" width="85">
       </el-table-column>
-      <el-table-column label="操作" width="80">
+      <el-table-column label="操作" width="150">
         <template scope="scope">
           <el-popover ref="deleteConfirm" placement="top" width="160" v-model="scope.row.confirmDeleteVisible">
             <p>确定删除吗？</p>
@@ -41,30 +41,29 @@
               <el-button type="primary" size="mini" @click="deleteSubmit">确定</el-button>
             </div>
           </el-popover>
-          <el-button size="small" type="danger" v-popover:deleteConfirm @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="small" type="primary" v-if="review" @click="handleReview(scope.$index, scope.row)">再审核</el-button>
+
+          <el-button size="small" type="primary" v-if="!review" @click="handlePassed(scope.$index, scope.row)">通过</el-button>
+          <el-button size="small" type="danger" v-if="!review" v-popover:deleteConfirm @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination">
-      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalArticle" :page-size="perPageArticles">
+      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalQuestion" :page-size="perPageQuestions">
       </el-pagination>
     </div>
   </div>
 </template>
 <script>
-import selectData from "../../../../static/data/selectData"
 export default {
   data() {
-    this.getArticalTotal();
-    this.getPage(1, 10);
     return {
-      perPageArticles: 10,
-      totalArticle: 0,
+      perPageQuestions: 10,
+      totalQuestion: 0,
       questions: [],
       QuestionsBack: [],
       tableData: [],
       curPage: "",
-      multipleSelection: [],
       del_list: [],
       searchKey: "",
       currentDeleteItem: {},
@@ -88,45 +87,76 @@ export default {
     },
     editQuestion(row) {
       row.type = 1
-      this.$router.push({ path: "/editQuestion", query: { question: row } });
+      this.$router.push({ path: "/editQuestion", query: { question: row } })
     },
-    getArticalTotal() {
-      //获取文章总数
-      this.totalArticle = 10
+    getQuestionTotal() {
+      //获取问题总数
+      let that = this
+      let url = this.$API.getService("Question", "getTotalNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res.data.data)
+        that.totalQuestion = res.data.data
+      })
     },
     getPage(page, pageNum) {
-      this.questions = selectData.data
-      this.QuestionsBack = this.questions
+      let that = this
+      let url = this.$API.getService("Question", "getPage")
+
+      this.$API.post(url, {
+        page: page,
+        num: pageNum,
+      }).then((res) => {
+        console.log(res.data.data)
+        that.questions = res.data.data
+        that.QuestionsBack = that.questions
+      })
     },
     resetEditFlag(flag) {
-      for (var i = 0; i < this.cate.length; i++) this.cate[i].editFlag = flag;
+      for (var i = 0; i < this.cate.length; i++)
+        this.cate[i].editFlag = flag
     },
     handleCurrentChange(val) {
-      this.getPage(val, this.perPageArticles);
+      this.getPage(val, this.perPageQuestions)
+    },
+    handleReview(index, row) {
+      this.questions[index].status = 0
+      let that = this
+      let url = this.$API.getService("Question", "UpdateById")
+
+      this.$API.post(url, this.questions[index])
+      .then((res) => {
+        console.log(res.data.data)
+        let result = res.data.data
+        if(result == 1) {
+          that.$message.success("更新成功！")
+          //被送入待审核之后 在列表中删除
+          that.questions.splice(index, 1)
+        }
+      }).catch((err) => {
+        that.$message.success("更新失败！")
+      })
+    },
+    handlePassed() {
+      this.questions[index].status = 1
     },
     search(key) {
       if(!key)
         key = this.searchKey
-      key = key.trim();
-      let searchRes = [];
+      key = key.trim()
+      let searchRes = []
       for (var i = 0; i < this. QuestionsBack.length; i++) {
         if (this. QuestionsBack[i].question.indexOf(key) != -1)
-          searchRes.push(this.QuestionsBack[i]);
+          searchRes.push(this.QuestionsBack[i])
       }
       this.questions = searchRes;
     },
-    handleEdit(index, row) {
-      this.resetEditFlag(false);
-      this.cate[index].editFlag = false;
-      console.log(this.cate)
-      this.$message("编辑第" + (index + 1) + "行");
-    },
     handleDelete(index, row) {
-      row.index = index;
-      this.currentDeleteItem = row;
+      row.index = index
+      this.currentDeleteItem = row
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     }
   },
   watch: {
@@ -137,8 +167,10 @@ export default {
   },
   mounted() {
     //获取问题数据
-    this.getPage()
-  }
+    this.getQuestionTotal()
+    this.getPage(1, 1)
+  },
+  props: ["review"],
 };
 </script>
 
