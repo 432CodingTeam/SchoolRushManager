@@ -21,6 +21,7 @@ var API = {
         getAll: "getAll",
         login: "login",
         getById: "getById",
+        logout: "logout",
     },
     Campus: {
         root: "Campus",
@@ -35,6 +36,7 @@ var API = {
         getTotalNum: "getTotalNum",
         getPage: "getPage",
         UpdateById: "UpdateById",
+        deleteById: "deleteById",
     }
 }
 
@@ -46,13 +48,13 @@ function getService(cls, action) {
 
 //get方法
 function get(url, params) {
-    console.log("get")
+    console.log("log get params")
     console.log(params)
     return axios.get(url, params)
 }
 //post方法
 function post(url, params) {
-    console.log("post")
+    console.log("log post params")
     console.log(params)
     return axios.post(url, params)
 }

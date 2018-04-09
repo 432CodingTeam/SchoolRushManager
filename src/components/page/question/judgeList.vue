@@ -67,15 +67,31 @@ export default {
       console.log("取消");
     },
     deleteSubmit() {
-      let id = this.currentDeleteItem.id;
-      const that = this;
-      //TODO: API对接
-      that.questions.splice(that.currentDeleteItem.index, 1);
-      that.$message.success("删除成功！");
-      console.log("删除");
+      let id = this.currentDeleteItem.id
+      const that = this
+      let url = this.$API.getService("Question", "deleteById")
+
+      this.$API.post(url, {
+        id: this.questions[this.currentDeleteItem.index].id
+      })
+      .then((res) => {
+        console.log(res.data.data)
+
+        if (res.data.data == 1){
+          that.$message.success("删除成功!")
+          that.questions.splice(that.currentDeleteItem.index, 1)
+          return
+        }
+        that.$message.error("删除失败！")
+      }).catch((err) => {
+        console.log(err)
+        that.$message.error("删除失败！")
+      })
+      this.questions[this.currentDeleteItem.index].confirmDeleteVisible = false;
+      this.currentDeleteItem = {};
     },
     editQuestion(row) {
-      row.type = 3
+      row.type = 1
       this.$router.push({ path: "/editQuestion", query: { question: row } })
     },
     getQuestionTotal() {
@@ -110,27 +126,58 @@ export default {
     },
     handleReview(index, row) {
       this.questions[index].status = 0
+      let that = this
+      let url = this.$API.getService("Question", "UpdateById")
+
+      this.$API.post(url, this.questions[index])
+      .then((res) => {
+        console.log(res.data.data)
+        let result = res.data.data
+        if(result == 1) {
+          that.$message.success("更新成功！")
+          //被送入待审核之后 在列表中删除
+          that.questions.splice(index, 1)
+        }
+      }).catch((err) => {
+        that.$message.success("更新失败！")
+      })
     },
-    handlePassed() {
+    handlePassed(index, row) {
       this.questions[index].status = 1
+
+      let that = this
+      let url = this.$API.getService("Question", "UpdateById")
+
+      this.$API.post(url, this.questions[index])
+      .then((res) => {
+        console.log(res.data.data)
+        let result = res.data.data
+        if(result == 1) {
+          that.$message.success("更新成功！")
+          //被送入待审核之后 在列表中删除
+          that.questions.splice(index, 1)
+        }
+      }).catch((err) => {
+        that.$message.success("更新失败！")
+      })
     },
     search(key) {
       if(!key)
         key = this.searchKey
-      key = key.trim();
-      let searchRes = [];
+      key = key.trim()
+      let searchRes = []
       for (var i = 0; i < this. QuestionsBack.length; i++) {
         if (this. QuestionsBack[i].question.indexOf(key) != -1)
-          searchRes.push(this.QuestionsBack[i]);
+          searchRes.push(this.QuestionsBack[i])
       }
       this.questions = searchRes;
     },
     handleDelete(index, row) {
-      row.index = index;
-      this.currentDeleteItem = row;
+      row.index = index
+      this.currentDeleteItem = row
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     }
   },
   watch: {
@@ -145,7 +192,7 @@ export default {
     this.getPage(1, 1)
   },
   props: ["review"],
-};
+}
 </script>
 
 <style scoped>
