@@ -62,6 +62,10 @@ export default new Router({
                     path: '/editUser',
                     component: resolve => require(['../components/page/user/editUser.vue'], resolve)   // vue-schart组件
                 },
+                {
+                    path: '/chart',
+                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-schart组件
+                },
             ]
         },
         {
