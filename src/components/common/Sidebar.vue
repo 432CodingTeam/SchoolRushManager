@@ -35,16 +35,33 @@
                         title: '问题管理',
                         subs: [
                             {
+                                index: 'editQuestion',
+                                title: '添加 & 编辑问题'
+                            },
+                            {
                                 index: 'allQuestions',
                                 title: '全部问题'
                             },
                             {
-                                index: 'editQuestion',
-                                title: '添加问题'
-                            },
-                            {
                                 index: 'reviewQuestion',
                                 title: '待审核问题'
+                            },
+                        ]
+                    },
+                    {
+                        icon: 'el-icon-edit',
+                        index: '3',
+                        title: '用户管理',
+                        subs: [
+                            {
+                                icon: 'el-icon-edit',
+                                index: 'editUser',
+                                title: '添加 & 编辑用户',
+                            },
+                            {
+                                icon: 'el-icon-edit',
+                                index: 'userManage',
+                                title: '用户管理',
                             },
                         ]
                     },
@@ -77,16 +94,9 @@
             }
         },
         created() {
-            //先判断是否已经登陆
+            //TODO: 先判断是否已经登陆
             const that = this
-            that.$axios.get(that.$API.Admin.getAdminInfo)
-            .then((res) => {
-                let admin = res.data.data
-                if(admin.islogin == 0) {
-                    console.log("未登录")
-                    that.$router.push('/login');
-                }
-            })
+            
         },
     }
 </script>

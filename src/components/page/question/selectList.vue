@@ -111,8 +111,7 @@ export default {
       let url = this.$API.getService("Question", "getTotalNum")
 
       this.$API.get(url).then((res) => {
-        console.log(res.data.data)
-        that.totalQuestion = res.data.data
+        that.totalQuestion = parseInt(res.data.data)
       })
     },
     getPage(page, pageNum) {
@@ -200,7 +199,7 @@ export default {
   mounted() {
     //获取问题数据
     this.getQuestionTotal()
-    this.getPage(1, 1)
+    this.getPage(1, 10)
   },
   props: ["review"],
 }

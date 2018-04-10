@@ -100,8 +100,7 @@ export default {
       let url = this.$API.getService("Question", "getTotalNum")
 
       this.$API.get(url).then((res) => {
-        console.log(res.data.data)
-        that.totalQuestion = res.data.data
+        that.totalQuestion = parseInt(res.data.data)
       })
     },
     getPage(page, pageNum) {
