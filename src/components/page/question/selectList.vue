@@ -8,9 +8,9 @@
 
       <el-table-column prop="id" label="编号" width="65">
       </el-table-column>
-      <el-table-column prop="question" label="问题">
+      <el-table-column prop="q" label="问题">
         <template scope="scope">
-          <a class="article-title" @click="editQuestion(scope.row)">{{ scope.row.question }}</a>
+          <a class="article-title" @click="editQuestion(scope.row)">{{ scope.row.q }}</a>
         </template>
       </el-table-column>
       <el-table-column prop="A" label="A" width="45">
@@ -23,9 +23,9 @@
       </el-table-column>
       <el-table-column prop="correct" label="正确答案" width="95">
       </el-table-column>
-      <el-table-column prop="majorID" label="专业" width="70">
+      <el-table-column prop="majorName" label="专业" width="70">
       </el-table-column>
-      <el-table-column prop="uid" label="发布人" width="85">
+      <el-table-column prop="uName" label="发布人" width="85">
         <template scope="scope">
           <a class="article-title" @click="linkToArticle(scope.row)">{{ scope.row.uName }}</a>
         </template>
@@ -58,6 +58,7 @@
 export default {
   data() {
     return {
+      type: 1,
       perPageQuestions: 10,
       totalQuestion: 0,
       questions: [],
@@ -116,14 +117,17 @@ export default {
     },
     getPage(page, pageNum) {
       let that = this
-      let url = this.$API.getService("Question", "getPage")
+      let url = this.$API.getService("Question", "getPageByFilter")
 
       this.$API.post(url, {
         page: page,
         num: pageNum,
+        type: this.type,
+        status: this.review? 1:0,
       }).then((res) => {
         console.log(res.data.data)
-        that.questions = res.data.data
+        that.questions = res.data.data.page
+        that.totalQuestion = res.data.data.totalNum
         that.QuestionsBack = that.questions
       })
     },
@@ -198,7 +202,6 @@ export default {
   },
   mounted() {
     //获取问题数据
-    this.getQuestionTotal()
     this.getPage(1, 10)
   },
   props: ["review"],

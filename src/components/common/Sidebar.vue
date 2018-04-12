@@ -31,7 +31,7 @@ export default {
           title: "概况"
         },
         {
-          icon: "el-icon-edit",
+          icon: "el-icon-document",
           index: "2",
           title: "问题管理",
           subs: [
@@ -50,7 +50,7 @@ export default {
           ]
         },
         {
-          icon: "el-icon-edit",
+          icon: "el-icon-tickets",
           index: "3",
           title: "用户管理",
           subs: [

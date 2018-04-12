@@ -43,7 +43,9 @@
         <el-input type="text" v-model="user.email"></el-input>
       </el-form-item>
       <el-form-item label="密码:">
-        <el-input type="text" v-model="user.pass"></el-input>
+        <el-input :type="passwordInput" v-model="user.pass">
+          <el-button @click="changePassVisual" slot="prepend">显示密码</el-button>
+        </el-input>
       </el-form-item>
       <el-form-item label="学校">
         <el-select v-model="user.campusID" filterable placeholder="筛选学校">
@@ -75,6 +77,7 @@ export default {
       user: {},
       campusData: [],
       majorData: [],
+      passwordInput: "password"
     };
   },
   mounted() {
@@ -125,6 +128,14 @@ export default {
     handleSelect(item) {
       this.article.cate = item.id
     },
+    changePassVisual() {
+      console.log(this.passwordInput)
+      if( this.passwordInput == "password")
+        this.passwordInput = "text"
+      else
+        this.passwordInput = "password"
+      console.log(this.passwordInput)
+    }
   },
   components: {}
 };

@@ -6,87 +6,60 @@
           <i class="el-icon-setting"></i> 概况</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="plugins-tips">
-      <div class="content-title">共
-        <span class="number cursor" @click="jumpToArticleManage">{{1}}</span>名注册用户，贡献了
-        <span class="number">{{2}}</span>个问题，
-        <span class="number">{{3}}</span>名用户正在解决问题。</div>
-    </div>
     <el-row :gutter="10">
-      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>登陆信息</span>
-          </div>
-          <div class="login-info">
-              <p class="avatar"><img src="http://p6a87gauo.bkt.clouddn.com/user_23.png"></p>
-              <p class="name">iimT</p>
-              <p class="identify">管理员</p>
-              <p class="time">2018.4.10 21:29:08</p>
-          </div>
-        </el-card>
+      <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
+        <div class="plugins-tips">
+          <div class="content-title">共
+            <span class="number cursor" @click="jumpTo('userManage')">{{ curUserNum }}</span>名注册用户，贡献了
+            <span class="number cursor" @click="jumpTo('allQuestions')">{{ curQuestionsNum }}</span>个问题，
+            <span class="number">{{ curOnlineNum }}</span>名用户正在解决问题。</div>
+        </div>
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>日活跃</span>
+            </div>
+            <div class="text item">
+              <schart canvasId="line" width="850" height="300" :data="dailyLivenessData" type="bar" :options="Options"></schart>
+            </div>
+          </el-card>
+        </el-col>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>待办事项</span>
           </div>
           <div class="text item">
-              <el-badge :value="12" class="item">
-                <el-button size="small">待审核问题</el-button>
-              </el-badge>
+            <el-badge :value="readyToReviewNum" :max="99" class="item">
+              <el-button size="large" @click="toReviewQuestion">待审核问题</el-button>
+            </el-badge>
           </div>
         </el-card>
-      </el-col>
-      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>公告</span>
+            <span>登陆信息</span>
           </div>
-          <div class="text item">
-              <p>这里是公告：目前题目较少，请多贡献题目。积极审核题目。</p>
-          </div>
-        </el-card>
-      </el-col>
-      <!-- 整列 -->
-      <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>日活跃</span>
-          </div>
-          <div class="text item">
-              <schart canvasId="line" width="1000" height="300" :data="dailyQpassedData" type="line" :options="dailyQpassedOptions"></schart>
+          <div class="login-info">
+            <p class="avatar"><img src="http://p6a87gauo.bkt.clouddn.com/user_23.png"></p>
+            <p class="name">iimT</p>
+            <p class="identify">管理员</p>
+            <p class="time">{{ curTime }}</p>
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>每日答题量</span>
-          </div>
-          <div class="text item">
-              <schart canvasId="bar" width="1000" height="300" :data="dailyQpassedData" type="bar" :options="dailyQpassedOptions"></schart>
-          </div>
-        </el-card>
-      </el-col>
-
-      
-      
     </el-row>
     <div class="ms-doc">
       <h3>README.md</h3>
       <article>
-        <h1>T-Blog</h1>
-        <p>基于Vue + Element + PhalAPI的博客后台</p>
+        <h1>SchoolRush</h1>
+        <p>一个基于用户问题解决与分享的刷题平台</p>
         <h2>前言</h2>
-        <p>对之前Shell风格的后台重新做的一套可视化面板。</p>
+        <p>解决自己擅长专业的问题来获取知识，通过设计问题来分享自己在解决问题时获得的经验。每个用户即是学者，也是老师，刷题为自己的高校冲榜。</p>
         <h2>TODO:</h2>
-        <el-checkbox disabled checked>评论管理</el-checkbox>
+        <el-checkbox disabled checked>首页数据展示</el-checkbox>
         <br>
-        <el-checkbox disabled checked>创作时的实时保存</el-checkbox>
-        <br>
-        <el-checkbox disabled checked>前台博文中的评论升级为批注样式</el-checkbox>
-        <br>
+        <el-checkbox disabled checked>学校/专业管理</el-checkbox>
       </article>
     </div>
   </div>
@@ -97,53 +70,111 @@ import Schart from "vue-schart";
 export default {
   data: function() {
     return {
-            dailyQpassedData:[
-                {name:'4.1',value:1141},
-                {name:'4.2',value:1499},
-                {name:'4.3',value:2260},
-                {name:'4.4',value:1170},
-                {name:'4.5',value:970},
-                {name:'4.6',value:1450},
-                {name:'4.7',value:2260},
-                {name:'4.8',value:1170},
-                {name:'4.9',value:970},
-                {name:'4.10',value:1450}
-            ],
-            data2 : [
-                {name:'短袖',value:1200},
-                {name:'休闲裤',value:1222},
-                {name:'连衣裙',value:1283},
-                {name:'外套',value:1314},
-                {name:'羽绒服',value:2314}
-            ],
-            options1: {
-                title: '某商店近年营业总额',
-                bgColor: '#009688',
-                titleColor: '#ffffff',
-                fillColor: '#e0f2f1',
-                axisColor: '#ffffff',
-                contentColor: '#999'
-            },
-            dailyQpassedOptions: {
-                bgColor: '#fff',
-                titleColor: '#ffffff',
-                legendColor: '#ffffff'
-            }
-        };
+      dailyLivenessData: [
+        { name: "11:00", value: 1141 },
+        { name: "12:00", value: 1499 },
+        { name: "13:00", value: 2260 },
+        { name: "14:00", value: 1170 },
+        { name: "15:00", value: 970  },
+        { name: "16:00", value: 1450 },
+        { name: "17:00", value: 2260 },
+        { name: "18:00", value: 1170 },
+        { name: "19:00", value: 970  },
+        { name: "20:00", value: 1450 }
+      ],
+      Options: {
+        bgColor: "#ffffff",
+        titleColor: "#ffffff",
+        legendColor: "#ffffff"
+      },
+      curTime: "",
+      curUserNum: 89,
+      curQuestionsNum: 5,
+      curOnlineNum: 3,
+      readyToReviewNum: 5,
+    };
   },
   methods: {
-    jumpToArticleManage() {
-      this.$router.push("/article");
+    jumpTo(to) {
+      this.$router.push("/" + to)
+    },
+    getCurTime() {
+      let myDate = new Date()
+      let date = myDate.toLocaleDateString()
+      let hours = myDate.getHours()
+      let minutes = myDate.getMinutes()
+      let seconds = myDate.getSeconds()
+      if (seconds < 10) seconds = "0" + seconds
+      if (minutes < 10) minutes = "0" + minutes
+      if (hours < 10) hours = "0" + hours
+
+      return date + " " + hours + ":" + minutes + ":" + seconds
+    },
+    toReviewQuestion() {
+      this.$router.push("/reviewQuestion")
+    },
+    getcurQuestionsNum() {
+      let that = this
+      let url = this.$API.getService("User", "GetTotalNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res)
+
+        that.curUserNum = res.data.data
+      })
+    },
+    getCurUserNum() {
+      let that = this
+      let url = this.$API.getService("Question", "GetTotalNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res)
+
+        that.curQuestionsNum = res.data.data
+      })
+    },
+    getcurOnlineNum() {
+      let that = this
+      let url = this.$API.getService("User", "GetOnlineNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res)
+
+        that.curOnlineNum = res.data.data
+      })
+    },
+    getReadyToReviewNum() {
+      let that = this
+      let url = this.$API.getService("User", "GetTotalNum")
+
+      this.$API.get(url).then((res) => {
+        console.log(res)
+
+        that.curOnlineNum = res.data.data
+      })
+    },
+    getAdminInfo() {
+      this.userInfo = JSON.parse(localStorage.getItem(""))
     }
   },
   components: {
     Schart
   },
-}
+  mounted() {
+    const that = this;
+    var Timer = setInterval(function() {
+      that.curTime = that.getCurTime()
+    }, 1000)
+
+    this.getCurUserNum()
+    this.getcurQuestionsNum()
+    this.getcurOnlineNum()
+  }
+};
 </script>
 
 <style scoped>
-.login-info p{
+.login-info p {
   text-align: center;
   margin: 10px 0;
 }
@@ -180,8 +211,6 @@ export default {
   color: #1f2f3d;
 }
 .ms-doc {
-  width: 100%;
-  max-width: 980px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
     sans-serif;
 }

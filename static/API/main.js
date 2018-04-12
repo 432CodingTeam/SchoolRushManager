@@ -26,6 +26,8 @@ var API = {
         GetTotalNum: "GetTotalNum",
         getPage: "getPage",
         GetFilterPage: "GetFilterPage",
+        GetOnlineNum: "GetOnlineNum",
+        searchByName: "searchByName",
     },
     Campus: {
         root: "Campus",
@@ -37,10 +39,14 @@ var API = {
     },
     Question: {
         root: "Question",
-        getTotalNum: "getTotalNum",
+        GetTotalNum: "getTotalNum",
         getPage: "getPage",
         UpdateById: "UpdateById",
         deleteById: "deleteById",
+        getPageByFilter: "getPageByFilter",
+    },
+    Token: {
+        GetTotalNum: "GetTotalNum", 
     }
 }
 

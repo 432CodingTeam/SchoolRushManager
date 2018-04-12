@@ -55,8 +55,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="identify" label="身份" width="85px">
+        <template scope="scope">
+          {{ scope.row.identify==1? "用户":"管理员" }}
+        </template>
       </el-table-column>
       <el-table-column prop="gender" label="性别" width="85px">
+        <template scope="scope">
+          {{ scope.row.gender==1? "男":"女" }}
+        </template>
       </el-table-column>
       <el-table-column prop="campusName" label="高校">
       </el-table-column>
@@ -230,8 +236,19 @@ export default {
       this.multipleSelection = val
     },
     searchAll(){
-      let key = this.searchKey
-      //TODO: 远程搜索用户
+      let data = {
+        name: this.searchKey,
+        page: 1,
+        num: 20,
+      }
+      
+      const that = this
+      const url  = this.$API.getService("User", "searchByName")
+      
+      this.$API.post(url, data).then((res) => {
+        console.log(res)
+        that.formData = res.data.data
+      })
     },
     resetFilter() {
       this.filterData = {}
