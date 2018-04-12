@@ -80,7 +80,7 @@ export default {
         { name: "17:00", value: 2260 },
         { name: "18:00", value: 1170 },
         { name: "19:00", value: 970  },
-        { name: "20:00", value: 1450 }
+        { name: "20:00", value: 1450 },
       ],
       Options: {
         bgColor: "#ffffff",
@@ -92,7 +92,7 @@ export default {
       curQuestionsNum: 5,
       curOnlineNum: 3,
       readyToReviewNum: 5,
-    };
+    }
   },
   methods: {
     jumpTo(to) {
@@ -113,24 +113,25 @@ export default {
     toReviewQuestion() {
       this.$router.push("/reviewQuestion")
     },
-    getcurQuestionsNum() {
+    getCurUserNum() {
       let that = this
       let url = this.$API.getService("User", "GetTotalNum")
 
       this.$API.get(url).then((res) => {
         console.log(res)
-
-        that.curUserNum = res.data.data
+          that.curUserNum = res.data.data
       })
     },
-    getCurUserNum() {
+    getcurQuestionsNum() {
       let that = this
       let url = this.$API.getService("Question", "GetTotalNum")
 
       this.$API.get(url).then((res) => {
         console.log(res)
-
-        that.curQuestionsNum = res.data.data
+        if(res.data.data == [])
+          that.curQuestionsNum = 0
+        else
+          that.curQuestionsNum = res.data.data
       })
     },
     getcurOnlineNum() {
@@ -145,16 +146,27 @@ export default {
     },
     getReadyToReviewNum() {
       let that = this
-      let url = this.$API.getService("User", "GetTotalNum")
+      let url = this.$API.getService("Question", "GetTotalNum")
 
-      this.$API.get(url).then((res) => {
+      this.$API.get(url,{
+        params:{
+          status: 1
+        }
+      }).then((res) => {
         console.log(res)
 
-        that.curOnlineNum = res.data.data
+        that.readyToReviewNum = res.data.data
       })
     },
     getAdminInfo() {
       this.userInfo = JSON.parse(localStorage.getItem(""))
+    },
+    initData() {
+      this.getAdminInfo()
+      this.getCurUserNum()
+      this.getcurQuestionsNum()
+      this.getcurOnlineNum()
+      this.getReadyToReviewNum()
     }
   },
   components: {
@@ -166,9 +178,7 @@ export default {
       that.curTime = that.getCurTime()
     }, 1000)
 
-    this.getCurUserNum()
-    this.getcurQuestionsNum()
-    this.getcurOnlineNum()
+    this.initData()
   }
 };
 </script>
