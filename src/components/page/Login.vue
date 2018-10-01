@@ -17,7 +17,7 @@
         <div class="login-btn">
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
         </div>
-        <p style="font-size:12px;line-height:30px;color:#999;">Tips : 请勤奋更新。</p>
+        <p style="font-size:12px;line-height:30px;color:#999;">Tips : 好好学习，天天向上。</p>
       </el-form>
     </div>
   </div>
@@ -82,7 +82,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background: url("../../../static/img/login-bg.jpg");
+  background: url("../../../static/img/login-bg.jpg") 100% 100%;
   background-size: 100% 100%;
 }
 .ms-title {

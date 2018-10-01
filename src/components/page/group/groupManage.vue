@@ -3,35 +3,17 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-menu"></i> 用户管理</el-breadcrumb-item>
+          <i class="el-icon-menu"></i> 小组管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="handle-box">
-      <el-input v-model="searchKey" placeholder="搜索用户名" class="handle-input mr10"></el-input>
+      <el-input v-model="searchKey" placeholder="搜索小组名" class="handle-input mr10"></el-input>
       <el-button type="primary" icon="search" @click="searchAll">搜索</el-button>
 
       <!-- 筛选条件 -->
       <el-collapse class="filter">
         <el-collapse-item  title="筛选条件" name="1">
           <el-form ref="form" v-model="filterData" label-width="80px">
-            <el-form-item label="性别">
-              <el-radio-group v-model="filterData.gender">
-                <el-radio :label=1>男</el-radio>
-                <el-radio :label=0>女</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="身份">
-              <el-radio-group v-model="filterData.identify">
-                <el-radio :label=1>用户</el-radio>
-                <el-radio :label=2>管理员</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="学校">
-              <el-select v-model="filterData.campusID" filterable placeholder="筛选学校">
-                <el-option v-for="item in campusData" :key=item.id :label=item.name :value=item.id>
-                </el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item label="专业">
               <el-select v-model="filterData.majorID" filterable placeholder="筛选专业">
                 <el-option v-for="item in majorData" :key=item.id :label=item.name :value=item.id>
@@ -49,14 +31,14 @@
     <el-table :data="formData" border ref="multipleTable" :empty-text="emptyText" @selection-change="handleSelectionChange">
       <el-table-column prop="id" label="编号" width="65px">
       </el-table-column>
-      <el-table-column prop="name" label="用户名">
+      <el-table-column prop="name" label="小组名">
         <template scope="scope">
-          <a class="article-title" @click="editUser(scope.row)">{{ scope.row.name }}</a>
+          <a class="article-title" @click="editgroup(scope.row)">{{ scope.row.name }}</a>
         </template>
       </el-table-column>
       <el-table-column prop="identify" label="身份" width="85px">
         <template scope="scope">
-          {{ scope.row.identify!=1? "用户":"管理员" }}
+          {{ scope.row.identify==1? "小组":"管理员" }}
         </template>
       </el-table-column>
       <el-table-column prop="gender" label="性别" width="85px">
@@ -92,33 +74,33 @@
 export default {
   data() {
     return {
-      perPageNum          : 20,
-      totalNum            : 0,
-      formData            : [],
-      formDataBack        : [],
-      tableData           : [],
-      curPage             : "",
-      del_list            : [],
-      searchKey           : "",
-      currentDeleteItem   : {},
+      perPageNum: 20,
+      totalNum: 0,
+      formData: [],
+      formDataBack: [],
+      tableData: [],
+      curPage: "",
+      del_list: [],
+      searchKey: "",
+      currentDeleteItem: {},
       confirmDeleteVisible: false,
-      filterData          : {},
-      emptyText           : "暂无数据",
-      campusData          : [],
-      majorData           : [],
+      filterData: {},
+      emptyText: "暂无数据",
+      campusData: [],
+      majorData: [],
     };
   },
   methods: {
     deleteCalcel() {
       console.log(this.currentDeleteItem)
       this.formData[this.currentDeleteItem.index].confirmDeleteVisible = false
-                    this.currentDeleteItem                             = {}
+      this.currentDeleteItem = {}
       console.log("取消")
     },
     deleteSubmit() {
-      let   id   = this.currentDeleteItem.id
+      let id = this.currentDeleteItem.id
       const that = this
-      let   url  = this.$API.getService("User", "deleteById")
+      let url = this.$API.getService("group", "deleteById")
 
       this.$API
         .post(url, {
@@ -139,16 +121,16 @@ export default {
           that.$message.error("删除失败！")
         })
       this.formData[this.currentDeleteItem.index].confirmDeleteVisible = false
-                    this.currentDeleteItem                             = {}
+      this.currentDeleteItem = {}
     },
-    editUser(row) {
+    editgroup(row) {
       row.type = 1
-      this.$router.push({ path: "/editUser", query: { user: row } })
+      this.$router.push({ path: "/editGroup", query: { group: row } })
     },
     getQuestionTotal() {
       //获取问题总数
       let that = this
-      let url  = this.$API.getService("User", "getTotalNum")
+      let url = this.$API.getService("Group", "getTotalNum")
 
       this.$API.get(url).then(res => {
         that.totalNum = parseInt(res.data.data)
@@ -156,17 +138,19 @@ export default {
     },
     getPage(page, pageNum) {
       let that = this
-      let url  = this.$API.getService("User", "getPage")
+      let url = this.$API.getService("Group", "getPage")
 
       this.$API
         .post(url, {
           page: page,
-          num : pageNum
+          num: pageNum
         })
         .then(res => {
           console.log(res.data.data)
-          that.formData     = res.data.data
+          that.formData = res.data.data
           that.formDataBack = that.formData
+          console.log(this.formData)
+          
         })
     },
     resetEditFlag(flag) {
@@ -175,51 +159,10 @@ export default {
     handleCurrentChange(val) {
       this.getPage(val, this.perPageNum)
     },
-    handleReview(index, row) {
-      this.formData[index].status = 0
-      let           that          = this
-      let           url           = this.$API.getService("Question", "UpdateById")
-
-      this.$API
-        .post(url, this.formData[index])
-        .then(res => {
-          console.log(res.data.data)
-          let result = res.data.data
-          if (result == 1) {
-            that.$message.success("更新成功！")
-            //被送入待审核之后 在列表中删除
-            that.formData.splice(index, 1)
-          }
-        })
-        .catch(err => {
-          that.$message.success("更新失败！")
-        })
-    },
-    handlePassed(index, row) {
-      this.formData[index].status = 1
-
-      let that = this
-      let url  = this.$API.getService("Question", "UpdateById")
-
-      this.$API
-        .post(url, this.formData[index])
-        .then(res => {
-          console.log(res.data.data)
-          let result = res.data.data
-          if (result == 1) {
-            that.$message.success("更新成功！")
-            //被送入待审核之后 在列表中删除
-            that.formData.splice(index, 1)
-          }
-        })
-        .catch(err => {
-          that.$message.success("更新失败！")
-        })
-    },
     search(key) {
-      if  (!key) key = this.searchKey
-          key        = key.trim()
-      let searchRes  = []
+      if (!key) key = this.searchKey
+      key = key.trim()
+      let searchRes = []
       for (var i = 0; i < this.formDataBack.length; i++) {
         if (this.formDataBack[i].name.indexOf(key) != -1)
           searchRes.push(this.formDataBack[i])
@@ -229,7 +172,7 @@ export default {
         this.emptyText = "本页没有搜索到，点击搜索按钮全局搜索看看~"
     },
     handleDelete(index, row) {
-      row.index              = index
+      row.index = index
       this.currentDeleteItem = row
     },
     handleSelectionChange(val) {
@@ -239,12 +182,12 @@ export default {
       let data = {
         name: this.searchKey,
         page: 1,
-        num : 20,
+        num: 20,
       }
       
       const that = this
-      const url  = this.$API.getService("User", "searchByName")
-      
+      const url  = this.$API.getService("Group", "searchByName")
+
       this.$API.post(url, data).then((res) => {
         console.log(res)
         that.formData = res.data.data
@@ -256,23 +199,23 @@ export default {
       this.formData = this.formDataBack
     },
     filter() {
-      const that           = this
-      const url            = this.$API.getService("User", "GetFilterPage")
-      let   Data           = this.filterData
-            Data.page      = 1
-            Data.num       = this.perPageNum
-            this.formData  = []
-            this.emptyText = "正在搜索..."
+      const that = this
+      const url = this.$API.getService("Group", "getFilterPage")
+      let Data = this.filterData
+      Data.page = 1
+      Data.num = this.perPageNum
+      this.formData = []
+      this.emptyText = "正在搜索..."
 
       this.$API.post(url, Data).then((res) => {
-        that.formData  = res.data.data
+        that.formData = res.data.data
         this.emptyText = "暂无数据"
       })
     },
     getAllMajor() {
       //TODO: 获取所有分类
       const that = this
-      const url  = this.$API.getService("Major", "getAll")
+      const url = this.$API.getService("Major", "getAll")
 
       this.$API.post(url).then((res) => {
         console.log(res)
@@ -280,22 +223,11 @@ export default {
         that.majorData = res.data.data
       })
     },
-    getAllCampus() {
-      //TODO: 获取所有分类
-      const that = this
-      const url  = this.$API.getService("Campus", "getAll")
-
-      this.$API.post(url).then((res) => {
-        console.log(res)
-
-        that.campusData = res.data.data
-      })
-    },
   },
   watch: {
     searchKey(key) {
       if (key == "") {
-        this.formData  = this.formDataBack
+        this.formData = this.formDataBack
         this.emptyText = "暂无数据"
       }
       else this.search(key)
@@ -303,12 +235,9 @@ export default {
   },
   mounted() {
     //获取问题数据
-    this.getQuestionTotal()
-    this.getPage(1, 20)
     this.getAllMajor()
-    this.getAllCampus()
+    this.getPage(1, 20)
   },
-  props: ["review"]
 }
 </script>
 
@@ -320,12 +249,12 @@ export default {
   width: 120px;
 }
 .handle-input {
-  width  : 300px;
+  width: 300px;
   display: inline-block;
 }
 .article-title:hover {
   cursor: pointer;
-  color : #20a0ff;
+  color: #20a0ff;
 }
 .article-title:visited {
   color: black;

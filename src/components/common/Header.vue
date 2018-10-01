@@ -4,7 +4,7 @@
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link">
-          <img class="user-logo" :src="userInfo.avatar"> {{userInfo.name}}
+          <img class="user-logo" src="http://p6a87gauo.bkt.clouddn.com/user_23.png"> iimT
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="loginout">退出</el-dropdown-item>

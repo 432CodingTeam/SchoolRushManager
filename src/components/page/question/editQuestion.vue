@@ -11,9 +11,9 @@
       可在输入问题的时候点击右边按钮添加下划线。
     </div>
     <el-form label-width="80px">
-      <el-form-item label="提问人:">
+      <!-- <el-form-item label="提问人:">
         <el-input type="text" v-model="question.uName"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="问题类型:">
         <el-select size="large" v-model="question.type" placeholder="请选择题型">
           <el-option key="选择题" label="选择题" value="1">
@@ -26,16 +26,16 @@
       </el-form-item>
       <el-form-item label="所属专业:">
         <el-select filterable v-model="question.majorID" placeholder="请选择题型">
-          <el-option key="专业1" label="专业1" value="1">
+          <el-option key="专业1" label="计算机科学与技术" value="1">
           </el-option>
-          <el-option key="专业2" label="专业2" value="2">
+          <el-option key="专业2" label="软件工程" value="2">
           </el-option>
-          <el-option key="专业3" label="专业3" value="3">
+          <el-option key="专业3" label="信息管理与信息系统" value="3">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="问题：">
-        <el-input v-model="question.question" placeholder="请输入问题...">
+        <el-input v-model="question.title" placeholder="请输入问题...">
           <el-button slot="append" @click="addUnderLine">____</el-button>
         </el-input>
       </el-form-item>
@@ -85,18 +85,13 @@
           <template slot="prepend">正确答案</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="给答题者:">
-        <el-input type="textarea" v-model="question.toAnswer"></el-input>
-      </el-form-item>
 
       <el-form-item label="是否审核:">
-        <el-radio-group v-model="question.status">
-          <el-radio :label=1>直接发布</el-radio>
-          <el-radio :label=0>待审核</el-radio>
-        </el-radio-group>
+        <el-radio v-model="question.status" label=1>直接发布</el-radio>
+        <el-radio v-model="question.status" label=0>待审核</el-radio>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="publish">添加</el-button>
+        <el-button type="primary" @click="publish">{{ isUpdate ? "更新" : "添加"}}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -107,26 +102,30 @@ export default {
   data: function() {
     return {
       question: {
-        type: "",
+        type    : "",
         question: "",
-        A: "",
-        B: "",
-        C: "",
-        D: "",
-        correct: "",
-        uName: "",
+        A       : "",
+        B       : "",
+        C       : "",
+        D       : "",
+        correct : "",
+        uName   : "",
         toAnswer: "",
-        majorID: "",
-        status: 0
-      }
+        majorID : "",
+        status  : 0
+      },
+      isUpdate: false,
+      qBack   : {},
     };
   },
   mounted() {
     //DOM挂载之后 判断是否传入了已经发表的文章
     //如果是 就将此文章信息填入 开始编辑文章
+    this.qBack = this.question
     if (this.$route.query.question) {
+      this.isUpdate = true
       this.question = this.$route.query.question;
-      console.log(this.question);
+      console.log(this.question)
     }
     //获取全部分类
     this.getAllMajor();
@@ -137,6 +136,18 @@ export default {
     },
     publish() {
       console.log(this.question);
+      let that = this
+      let url  = this.$API.getService("Question", "UpdateById")
+
+      this.$API.post(url, this.question)
+      .then((res) => {
+        console.log(res.data.data)
+        let result = res.data.data
+        that.$message.success("更新成功！")
+        this.question = this.qBack
+      }).catch((err) => {
+        that.$message.success("更新失败！")
+      })
     },
     handleSelect(item) {
       this.article.cate = item.id;

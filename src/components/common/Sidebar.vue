@@ -66,26 +66,38 @@ export default {
             }
           ]
         },
+        // {
+        //   icon: "el-icon-upload",
+        //   index: "uploadPublish",
+        //   title: "上传MD创作"
+        // },
+        // {
+        //   icon: "el-icon-document",
+        //   index: "article",
+        //   title: "我的创作"
+        // },
         {
-          icon: "el-icon-upload",
-          index: "uploadPublish",
-          title: "上传MD创作"
+          icon: "el-icon-tickets",
+          index: "4",
+          title: "小组管理",
+          subs: [
+            {
+              icon: "el-icon-edit",
+              index: "editGroup",
+              title: "添加 & 编辑小组"
+            },
+            {
+              icon: "el-icon-edit",
+              index: "groupManage",
+              title: "小组管理"
+            }
+          ]
         },
-        {
-          icon: "el-icon-document",
-          index: "article",
-          title: "我的创作"
-        },
-        {
-          icon: "el-icon-star-on",
-          index: "cate",
-          title: "分类管理"
-        },
-        {
-          icon: "el-icon-setting",
-          index: "ManageBlog",
-          title: "管理博客"
-        }
+        // {
+        //   icon: "el-icon-setting",
+        //   index: "ManageBlog",
+        //   title: "管理博客"
+        // }
       ]
     };
   },

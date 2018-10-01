@@ -21,7 +21,7 @@ import blankList from "./blankList"
 export default {
   data() {
     return {
-      questionType: "1",
+      questionType: "2",
     };
   },
   methods: {

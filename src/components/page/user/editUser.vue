@@ -3,12 +3,12 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-date"></i> 问题管理</el-breadcrumb-item>
-        <el-breadcrumb-item>添加问题</el-breadcrumb-item>
+          <i class="el-icon-date"></i> 用户管理</el-breadcrumb-item>
+        <el-breadcrumb-item>添加用户</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="plugins-tips">
-      可在输入问题的时候点击右边按钮添加下划线。
+      鼠标移上头像栏可以查看图片。
     </div>
     <!-- 头像弹出层 -->
     <el-popover ref="avatarPop" placement="top" width="120" trigger="hover">

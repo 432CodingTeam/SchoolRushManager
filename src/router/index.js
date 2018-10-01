@@ -4,6 +4,8 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    // mode: 'history',
+    // base: '/SchoolRushServer/admin/',
     routes: [
         {
             path: '/',
@@ -61,6 +63,14 @@ export default new Router({
                 {
                     path: '/editUser',
                     component: resolve => require(['../components/page/user/editUser.vue'], resolve)   // vue-schart组件
+                },
+                {
+                    path: '/editGroup',
+                    component: resolve => require(['../components/page/group/editGroup.vue'], resolve)   // vue-schart组件
+                },
+                {
+                    path: '/groupManage',
+                    component: resolve => require(['../components/page/group/groupManage.vue'], resolve)   // vue-schart组件
                 },
                 {
                     path: '/chart',

@@ -8,18 +8,16 @@
 
       <el-table-column prop="id" label="编号" width="65">
       </el-table-column>
-      <el-table-column prop="q" label="问题">
+      <el-table-column prop="title" label="问题">
         <template scope="scope">
-          <a class="article-title" @click="editQuestion(scope.row)">{{ scope.row.q }}</a>
+          <a class="article-title" @click="editQuestion(scope.row)">{{ scope.row.title }}</a>
         </template>
       </el-table-column>
-      <el-table-column prop="correct" label="正确答案" width="95">
+      <!-- <el-table-column prop="correct" label="正确答案" width="95">
+      </el-table-column> -->
+      <el-table-column prop="majorName" label="专业" width="100">
       </el-table-column>
-      <el-table-column prop="majorName" label="专业" width="70">
-      </el-table-column>
-      <el-table-column prop="uName" label="发布人" width="85">
-      </el-table-column>
-      <el-table-column prop="toAnswer" label="提示" width="85">
+      <el-table-column prop="uName" label="发布人" width="100">
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template scope="scope">
@@ -92,7 +90,7 @@ export default {
       this.currentDeleteItem = {};
     },
     editQuestion(row) {
-      row.type = 1
+      row.type = 2
       this.$router.push({ path: "/editQuestion", query: { question: row } })
     },
     getQuestionTotal() {
@@ -136,11 +134,9 @@ export default {
       .then((res) => {
         console.log(res.data.data)
         let result = res.data.data
-        if(result == 1) {
-          that.$message.success("更新成功！")
-          //被送入待审核之后 在列表中删除
-          that.questions.splice(index, 1)
-        }
+        that.$message.success("更新成功！")
+        //被送入待审核之后 在列表中删除
+        that.questions.splice(index, 1)
       }).catch((err) => {
         that.$message.success("更新失败！")
       })
@@ -155,11 +151,9 @@ export default {
       .then((res) => {
         console.log(res.data.data)
         let result = res.data.data
-        if(result == 1) {
-          that.$message.success("更新成功！")
-          //被送入待审核之后 在列表中删除
-          that.questions.splice(index, 1)
-        }
+        that.$message.success("更新成功！")
+        //被送入待审核之后 在列表中删除
+        that.questions.splice(index, 1)
       }).catch((err) => {
         that.$message.success("更新失败！")
       })
@@ -191,7 +185,7 @@ export default {
   },
   mounted() {
     //获取问题数据
-    this.getPage(1, 1)
+    this.getPage(1, 10)
   },
   props: ["review"],
 }
